@@ -4,15 +4,15 @@ import { Login } from './components/Login';
 import { SecretStuff } from './components/SecretStuff.jsx'
 
 function App() {
-  const [isLogged,setIsLogged] = useState(false);
+  const [isLoggedIn,setIsLoggedIn] = useState(false);
   return (
     <>
     <header>
       <h1>My First Login</h1>
     </header>
-    {isLogged
+    {isLoggedIn
       ? <SecretStuff />
-      : <Login setIsLogged={setIsLogged} />
+      : <Login setIsLoggedIn={setIsLoggedIn} />
     }
     </>
   );
