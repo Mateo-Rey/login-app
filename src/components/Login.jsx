@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 const firebaseConfig = {
   apiKey: "AIzaSyDMwWEv-muIyCxVLlBOv8FGTb1pIteEY-Q",
   authDomain: "first-login-mr-aef8a.firebaseapp.com",
@@ -9,13 +15,17 @@ const firebaseConfig = {
   messagingSenderId: "508973050489",
   appId: "1:508973050489:web:29082a2738bc1155d782a8",
 };
+
+const connect = () => {
+  const app = initializeApp(firebaseConfig);
+  return getAuth(app);
+};
 export const Login = ({ setIsLoggedIn }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSignUp = async () => {
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    const auth = connect();
     const user = await createUserWithEmailAndPassword(
       auth,
       email,
@@ -26,6 +36,29 @@ export const Login = ({ setIsLoggedIn }) => {
       setIsLoggedIn(true);
     }
   };
+
+  const handleLogin = async () => {
+    const auth = connect();
+    const user = signInWithEmailAndPassword(auth, email, password)
+    .catch(
+      (err) => alert(err.message)
+    );
+    if (user) {
+      console.log(user);
+      setIsLoggedIn(true);
+    }
+  };
+
+  const handleGoogleLogin = async ( ) => {
+    const auth = connect()
+    const provider = new GoogleAuthProvider()
+    const user = await signInWithPopup(auth,provider)
+        .catch(err => alert(err.message))
+    if(user) {
+        console.log(user)
+        setIsLoggedIn(true)
+    }
+  }
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
@@ -54,7 +87,10 @@ export const Login = ({ setIsLoggedIn }) => {
         />
       </label>
       <br />
-      <button onClick={handleSignUp}>Sign Up</button>
+      <button onClick={handleLogin}>Login</button>&nbsp;
+      <button onClick={handleSignUp}>Sign Up</button>&nbsp;
+      <button onClick={handleGoogleLogin}>Sign in With Google Instead.</button>
+
     </form>
   );
 };
